@@ -5,7 +5,7 @@ const fs = require('fs')
 var myArgs = process.argv.slice(2);
 console.log('myArgs: ', myArgs);
 class Main {
-    constructor(){
+    constructor() {
         this.data = obj;
         this.data1 = {};
         this.data2 = {};
@@ -14,47 +14,54 @@ class Main {
 
     }
 
-    firstLoop(){
+    firstLoop() {
         const wap = this.data
-        for(let i in wap){
-            if(wap.hasOwnProperty(i)){
-                if(typeof wap[i] === 'string'){
-                   translate(wap[i],{to:this.arg}).then(res=>{
-                    this.data2[i] = res.text
-                   })
+        for (let i in wap) {
+            if (wap.hasOwnProperty(i)) {
+                if (typeof wap[i] === 'string') {
+                    translate(wap[i], {
+                        to: this.arg
+                    }).then(res => {
+                        this.data2[i] = res.text
+                        this.fifthLoop()
+                    }).catch(err=>{
+                        console.log(err);
+                    })
                 }
             }
         }
     }
 
-    secondLoop(){
+    secondLoop() {
         const wap = this.data
-        for(let i in wap){
-            if(wap.hasOwnProperty(i)){
-                if(typeof wap === 'object'){
-                   this.data1[i] = wap[i]
+        for (let i in wap) {
+            if (wap.hasOwnProperty(i)) {
+                if (typeof wap === 'object') {
+                    this.data1[i] = wap[i]
                 }
             }
         }
 
     }
 
-    thirdLoop(){
+    thirdLoop() {
         const wap = this.data1
-        for(let i in wap){
-            if(wap.hasOwnProperty(i)){
-                if(typeof wap === 'object'){
-                    for(let j in wap[i]){
-                        if(wap[i].hasOwnProperty(j)){
-                            if(typeof wap[i][j] === 'string'){
-                                translate(wap[i][j], {to: this.arg}).then((res)=>{
+        for (let i in wap) {
+            if (wap.hasOwnProperty(i)) {
+                if (typeof wap === 'object') {
+                    for (let j in wap[i]) {
+                        if (wap[i].hasOwnProperty(j)) {
+                            if (typeof wap[i][j] === 'string') {
+                                translate(wap[i][j], {
+                                    to: this.arg
+                                }).then((res) => {
                                     this.data1[i][j] = res.text
-                                     this.num += 1
-                                     console.log(this.num)
-                                     this.fifthLoop()
-                                  }).catch(err=>{
-                                      console.log(err)
-                                  })
+                                    this.num += 1
+                                    console.log(this.num)
+                                    this.fifthLoop()
+                                }).catch(err => {
+                                    console.log(err)
+                                })
                             }
                         }
                     }
@@ -63,22 +70,24 @@ class Main {
         }
     }
 
-    fourthLoop(){
+    fourthLoop() {
         const wap = this.data
-        for(let i in wap){
-            if(wap.hasOwnProperty(i)){
-                if(typeof wap === 'object'){
-                    for(let j in wap[i]){
-                        if(wap[i].hasOwnProperty(j)){
-                            if(typeof wap[i][j] === 'object'){
-                                for(let k in wap[i][j]){
-                                    if(wap[i][j].hasOwnProperty(k)){
-                                        
-                                        translate(wap[i][j][k], {to: this.arg}).then((res)=>{
-                                          this.data1[i][j][k] = res.text
-                                           this.num += 1
-                                           this.fifthLoop()
-                                        }).catch(err=>{
+        for (let i in wap) {
+            if (wap.hasOwnProperty(i)) {
+                if (typeof wap === 'object') {
+                    for (let j in wap[i]) {
+                        if (wap[i].hasOwnProperty(j)) {
+                            if (typeof wap[i][j] === 'object') {
+                                for (let k in wap[i][j]) {
+                                    if (wap[i][j].hasOwnProperty(k)) {
+
+                                        translate(wap[i][j][k], {
+                                            to: this.arg
+                                        }).then((res) => {
+                                            this.data1[i][j][k] = res.text
+                                            this.num += 1
+                                            this.fifthLoop()
+                                        }).catch(err => {
                                             console.log(err)
                                         })
                                     }
@@ -91,14 +100,20 @@ class Main {
         }
     }
 
-    fifthLoop(){
-        fs.writeFile(`./mainn_${this.arg}.json`, JSON.stringify({...this.data2,...this.data1}), err => {
-            if (err) {
-                console.log('Error writing file', err)
-            } else {
-                console.log('Successfully wrote file',this.num)
-            }
-        })
+    fifthLoop() {
+        if(this.num >= 801){
+            const wapp =  Object.assign({},this.data2,
+                this.data1)
+            fs.writeFile(`./main-${this.arg}.json`, JSON.stringify({
+                ...wapp
+            }), err => {
+                if (err) {
+                    console.log('Error writing file', err)
+                } else {
+                    console.log('Successfully wrote file', this.num )
+                }
+            })
+        }
     }
 }
 
@@ -107,3 +122,4 @@ dat.firstLoop()
 dat.secondLoop()
 dat.thirdLoop()
 dat.fourthLoop()
+dat.firstLoop()
